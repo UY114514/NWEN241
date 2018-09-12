@@ -3,8 +3,10 @@
 #include <time.h>
 
 int main() {
+    setbuf(stdout, 0);//CLion debugger fix
 
-    setbuf(stdout, 0);
+
+
     int randomNum, inputNum;
     srand(time(NULL));
     randomNum = (rand() % 100) + 1;
@@ -25,10 +27,13 @@ int main() {
     }
     printf("\n***GAME OVER!***\nMy number is %d.", randomNum);
     char input;
-    printf("\nRestart?");
 
+    printf("\nRestart?(y/n)");
     scanf("\n%c", &input);
-    printf("%c", input);
-
+    if (input == 'y' || input == 'Y') {
+        main();
+    } else {
+        return 0;
+    }
 
 }
