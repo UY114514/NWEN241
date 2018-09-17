@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define MIN_NUMBER (int)0
+#define MAX_NUMBER (int)100
+#define MAX_ATTEMPTS (int)5
+
 int main() {
     setbuf(stdout, 0);//CLion debugger fix
 
@@ -9,10 +13,9 @@ int main() {
 
     int randomNum, inputNum;
     srand(time(NULL));
-    randomNum = (rand() % 100) + 1;
+    randomNum = (rand() % MAX_NUMBER) + MIN_NUMBER;//generate random num
     printf("Guess my number between 1 and 100.You have max. 5 attempts");
-
-    for (size_t i = 0; i < 5; i++) {
+    for (size_t i = 0; i < MAX_ATTEMPTS; i++) {
         printf("\nInput your number:");
         scanf("%d", &inputNum);
         printf("\n");
