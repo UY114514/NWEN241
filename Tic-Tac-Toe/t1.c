@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 int is_solved(const char field[], int size) {
-    for (int i = 0; i < size - 2; ++i) {
+    for (int i = 0; i < size - 1; ++i) {
         if (field[i] == 'X') {
             if (field[i + 1] == 'X') {
                 if (field[i + 2] == 'X') {
@@ -19,7 +19,8 @@ int is_solved(const char field[], int size) {
 }
 
 int add_cross(char field[], int size, int position) {
-    if (position > size) {
+    if (position > size || position == 0) {
+
         return -1;
     }
 
@@ -34,6 +35,7 @@ int add_cross(char field[], int size, int position) {
 
 void draw_field(const char field[], int size) {
     //draw first line
+    printf("\n");
     for (int i = 0; i < size + 1; i++) {
         if (i == 0) {
             printf("+");
@@ -82,6 +84,41 @@ int main() {
     for (int i = 0; i < size1; i++) {//initial array with space
         field[i] = ' ';
     }
+
+    char player = 'B';
+    while (is_solved(field, size1) == 0) {
+        if(player=='A') {
+            player = 'B';
+        } else {
+            player = 'A';
+        }
+        draw_field(field, size1);
+        printf("\nENTER POSITION FOR PLAYER %c:", player);
+
+        int input;
+        scanf("%d", &input);
+
+        int add_cross_return = add_cross(field, size1,input);
+        if (add_cross_return ==0) {
+            printf("\n***POSITION OCCUPIED***");
+        } else if (add_cross_return == -1) {
+            printf("\n***INVALID POSITION***");
+        }
+
+
+
+    }
+
     draw_field(field, size1);
+    printf("\nPLAYER %c WON!",player);
+
+
+
+//    printf("\n*%d",is_solved(field, size1));
+
+
+
+
+
 }
 
