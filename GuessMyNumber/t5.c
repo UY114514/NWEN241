@@ -42,9 +42,9 @@ int main() {
         if (is_game_won(randomNum, input)) {
             printf("Congratulations! You found it! ");
             break;
-        } else if (inputNum > randomNum) {
+        } else if (input > randomNum) {
             printf("Sorry...My number is smaller than yours.");
-        } else if (inputNum < randomNum) {
+        } else if (input < randomNum) {
             printf("Sorry...My number is bigger than yours.");
         }
     }
