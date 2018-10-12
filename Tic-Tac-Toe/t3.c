@@ -1,8 +1,10 @@
 //
-// Created by UY114514 on 2018/10/8.
+// Created by UY114514 on 2018/10/10.
 //
 
+
 #include <stdio.h>
+#include <stdlib.h>
 
 
 void draw(int size, const char field[][size]) {
@@ -51,9 +53,8 @@ int is_solved(int size, const char field[][size]) {
      *
      * */
 
-//    printf("\n***IS_SOLVED_DEBUG_INFO\n");
     for (int col = 0; col < size - 1; col++) {
-        for (int row = 0; row < size ; row++) {
+        for (int row = 0; row < size; row++) {
             if (field[row][col] != ' ') {
                 if ((field[row][col] == field[row + 1][col]) &&
                     (field[row + 1][col] == field[row + 2][col])) {                   //HORIZONTAL
@@ -95,6 +96,13 @@ int add_cross(int size, char field[][size], char player, int x, int y) {
     return 0;
 }
 
+void make_turn(int size, char field[][size]) {
+//    (1 + (int) size * rand() / (RAND_MAX + 1)); //generate random int
+    while (add_cross(size, field, 'O', (1 + (int) size * rand() / (RAND_MAX + 1)),
+                     (1 + (int) size * rand() / (RAND_MAX + 1))) != 0) {
+    }
+
+}
 
 int main() {
     setbuf(stdout, 0);//CLion debugger fix
@@ -112,15 +120,9 @@ int main() {
             field[i][j] = ' ';
         }
     }
+    printf("\nYOU ARE PLAYER A\n");
 
 
-//    add_cross(size1, field, 'A', 2, 2);
-//    add_cross(size1, field, 'A', 3, 3);
-//    add_cross(size1, field, 'A', 2, 4);
-//    add_cross(size1, field, 'A', 4, 2);
-//    draw(size1, field);
-
-//    printf("\n%d", is_solved(size1, field));
     char player = 'B';
     while (is_solved(size1, field) == 0) {
         if (player == 'A') {
@@ -131,6 +133,10 @@ int main() {
         draw(size1, field);
         printf("\n");
         while (1) {
+            if (player == 'B') {
+                make_turn(size1, field);
+                break;
+            }//computer play as B
             int x, y;
             printf("\nENTER POSITION FOR PLAYER %c:\n", player);
             printf("X:");
@@ -154,7 +160,7 @@ int main() {
         }
 
     }
-    draw(size1, field);
+
     printf("\n****************\nPLAYER %c WON!", player);
 
 }
