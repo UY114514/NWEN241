@@ -15,10 +15,10 @@
 #include "kgame.h"
 #include <string.h>
 
-#if defined __GNUC__
-char *clear = "clear";
-#elif defined _MSC_VER
+#if defined _MSC_VER
 char *clear = "cls";
+#elif defined __GNUC__
+char *clear = "clear";
 #endif
 
 
