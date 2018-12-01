@@ -8,10 +8,10 @@
 #define VALID_INPUTS_STRING   "Valid Inputs: [UP/DN/LT/RT] [S/s:Save] [L/l:Load] [X/x:Exit]\n"
 #define DEFAULT_OUTPUT_STRING "You have not implemented kgame_render() yet.\n"
 
-#define KEY_UP 72
-#define KEY_DOWN 80
-#define KEY_LEFT 75
-#define KEY_RIGHT 77
+#define KEY_UP 56
+#define KEY_DOWN 53
+#define KEY_LEFT 52
+#define KEY_RIGHT 54
 
 int get_user_input(void)
 {
@@ -22,9 +22,9 @@ int get_user_input(void)
 
 		switch (c)
 		{
-		case 72:
+		case KEY_UP:
 			return UP;
-		case 80:
+		case KEY_DOWN:
 			return DOWN;
 		case KEY_LEFT:
 			return LEFT;
