@@ -15,10 +15,14 @@
 #include "kgame.h"
 #include <string.h>
 
-//#define UP 1
-//#define DOWN 2
-//#define LEFT 3
-//#define RIGHT 4
+#if defined __GNUC__
+char *clear = "clear";
+#elif defined _MSC_VER
+char *clear = "cls";
+#endif
+
+
+
 
 void kgame_init(kgame_t *game) {
     if (!game) return;
@@ -43,17 +47,20 @@ void kgame_add_random_tile(kgame_t *game) {
 
     // place to the random position 'A' or 'B' tile
     game->board[row][col] = 'A' + (rand() % 2);
+
 }
 
 
 void kgame_render(char *output_buffer, const kgame_t *game) //render a 4*4 grid
 {
+    system(clear);
     memset(output_buffer, 0, sizeof(*output_buffer));//clear buffer
 
     static char LINE[] = "\n+---+---+---+---+\n";
     static char WARP[] = "|";
     char        str1[] = "|   ";
-    for (int    row    = 0; row < KGAME_SIDES; ++row) {
+
+    for (int row = 0; row < KGAME_SIDES; ++row) {
         strcat(output_buffer, LINE);
         for (int col = 0; col < KGAME_SIDES; ++col) {
             str1[2] = game->board[row][col];
@@ -77,10 +84,9 @@ bool kgame_is_won(const kgame_t *game) {
     return false;
 }
 
-bool board_can_move(const kgame_t *game, int direction) {
+bool board_can_move(const kgame_t *game, int direction) {//TODO
     switch (direction) {
         case UP:
-//            dir_t U
             return true;
         case DOWN:
             return true;
@@ -131,22 +137,22 @@ bool kgame_is_move_possible(const kgame_t *game) {
 
 void move_down(kgame_t *game) {
     for (int count = 0; count <= KGAME_SIDES; count++) {
-        if (count == 1) {//move tile first then add'em up
-            for (int row = KGAME_SIDES - 1; row > 0; row--) {//add things up
+        if (count == 1) {//move tiles first then add'em up
+            for (int row = KGAME_SIDES - 1; row > 0; row--) {//add tiles
                 for (int col = KGAME_SIDES - 1; col >= 0; col--) {
-                    if (game->board[row][col] != 0 && game->board[row][col] == game->board[row - 1][col]) {
-                        game->board[row][col]     = game->board[row][col] + game->board[row - 1][col];
-                        game->board[row - 1][col] = 0;
+                    if (game->board[row][col] != ' ' && game->board[row][col] == game->board[row - 1][col]) {
+                        game->board[row][col]     = ++game->board[row][col];
+                        game->board[row - 1][col] = ' ';
                     }
                 }
             }
         } else {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 5; i++) {//move tiles
                 for (int row = KGAME_SIDES - 1; row > 0; row--) {
                     for (int col = KGAME_SIDES - 1; col >= 0; col--) {
-                        if (game->board[row][col] == 0) {
-                            game->board[row][col] = game->board[row - 1][col];
-                            game->board[row - 1][col] = 0;
+                        if (game->board[row][col] == ' ') {
+                            game->board[row][col]     = game->board[row - 1][col];
+                            game->board[row - 1][col] = ' ';
                         }
                     }
                 }
@@ -160,9 +166,9 @@ void move_up(kgame_t *game) {
         if (count == 1) {//move tile first then add'em up
             for (int row = 0; row < KGAME_SIDES - 1; row++) {//add things up
                 for (int col = 0; col <= KGAME_SIDES - 1; col++) {
-                    if (game->board[row][col] != 0 && game->board[row][col] == game->board[row + 1][col]) {
-                        game->board[row][col] = game->board[row][col] + game->board[row + 1][col];
-                        game->board[row + 1][col] = 0;
+                    if (game->board[row][col] != ' ' && game->board[row][col] == game->board[row + 1][col]) {
+                        game->board[row][col]     = ++game->board[row][col];
+                        game->board[row + 1][col] = ' ';
                     }
                 }
             }
@@ -170,9 +176,9 @@ void move_up(kgame_t *game) {
             for (int i = 0; i < 5; i++) {
                 for (int row = 0; row < KGAME_SIDES - 1; row++) {
                     for (int col = 0; col <= KGAME_SIDES - 1; col++) {
-                        if (game->board[row][col] == 0) {
-                            game->board[row][col] = game->board[row + 1][col];
-                            game->board[row + 1][col] = 0;
+                        if (game->board[row][col] == ' ') {
+                            game->board[row][col]     = game->board[row + 1][col];
+                            game->board[row + 1][col] = ' ';
                         }
                     }
                 }
@@ -187,18 +193,18 @@ void move_left(kgame_t *game) {
         if (count == 1) {
             for (int row = 0; row < KGAME_SIDES; row++) {
                 for (int col = 0; col < KGAME_SIDES - 1; col++) {
-                    if (game->board[row][col] != 0 && game->board[row][col] == game->board[row][col + 1]) {
-                        game->board[row][col] += game->board[row][col + 1];
-                        game->board[row][col + 1] = 0;
+                    if (game->board[row][col] != ' ' && game->board[row][col] == game->board[row][col + 1]) {
+                        game->board[row][col]     = ++game->board[row][col];
+                        game->board[row][col + 1] = ' ';
                     }
                 }
             }
         } else {
             for (int row = 0; row < KGAME_SIDES; row++) {//move tiles
                 for (int col = 0; col < (KGAME_SIDES - 1); col++) {
-                    if (game->board[row][col] == 0) {
+                    if (game->board[row][col] == ' ') {
                         game->board[row][col]     = game->board[row][col + 1];
-                        game->board[row][col + 1] = 0;
+                        game->board[row][col + 1] = ' ';
                     }
                 }
             }
@@ -213,18 +219,18 @@ void move_right(kgame_t *game) {
         if (count == 1) {
             for (int row = KGAME_SIDES - 1; row >= 0; row--) {
                 for (int col = KGAME_SIDES - 1; col > 0; col--) {
-                    if (game->board[row][col] != 0 && game->board[row][col] == game->board[row][col - 1]) {
-                        game->board[row][col] += game->board[row][col - 1];
-                        game->board[row][col - 1] = 0;
+                    if (game->board[row][col] != ' ' && game->board[row][col] == game->board[row][col - 1]) {
+                        game->board[row][col]     = ++game->board[row][col - 1];
+                        game->board[row][col - 1] = ' ';
                     }
                 }
             }
         } else {
             for (int row = KGAME_SIDES - 1; row >= 0; row--) {//move tiles
                 for (int col = KGAME_SIDES - 1; col > 0; col--) {
-                    if (game->board[row][col] == 0) {
+                    if (game->board[row][col] == ' ') {
                         game->board[row][col]     = game->board[row][col - 1];
-                        game->board[row][col - 1] = 0;
+                        game->board[row][col - 1] = ' ';
                     }
                 }
             }
@@ -233,17 +239,30 @@ void move_right(kgame_t *game) {
 
 }
 
-bool kgame_update(kgame_t *game, dir_t direction) {
+bool kgame_update(kgame_t *game,
+                  dir_t direction) {//direction = 1,2,3,4 : typedef enum direction { UP = 1, DOWN, LEFT, RIGHT } dir_t;
     // FIXME: Implement correctly (task 4)
+    if (board_can_move(game, direction)) {
+        switch (direction) {
+            case UP:
+                move_up(game);
+                break;
+            case DOWN:
+                move_down(game);
+                break;
+            case LEFT:
+                move_left(game);
+                break;
+            case RIGHT:
+                move_right(game);
+                break;
+        }
+        kgame_add_random_tile(game);
+        return true;
+    }
 
-
-
-
-
-
-
-
-    return true;
+    kgame_add_random_tile(game);
+    return false;
 }
 
 

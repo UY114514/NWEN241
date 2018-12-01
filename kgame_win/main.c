@@ -48,16 +48,17 @@ int get_user_input(void)
 
 int main()
 {
+	setbuf(stdout, 0);
 	kgame_t kgame;
 	int input_key;
 	bool render = true;
 
 	char kgame_buffer[KGAME_OUTPUT_BUFLEN] = DEFAULT_OUTPUT_STRING;
-
+	kgame_init(&kgame);
 	while (true)
 	{
 
-		kgame_init(&kgame);
+
 		if (render)
 		{
 
