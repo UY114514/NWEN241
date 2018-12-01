@@ -96,18 +96,30 @@ bool kgame_is_move_possible(const kgame_t *game) {
 
     for (int row = 0; row < KGAME_SIDES; ++row) { //traverse the board to find empty spaces
         for (int col = 0; col < KGAME_SIDES; ++col) {
-            if (game->board[row][col == ' ']) {
+            if (game->board[row][col] == ' ') {
                 return false;                     // at least one empty field
             }
         }
     }
 
-    for (int row = 0; row < KGAME_SIDES; ++row) { //traverse the board to find same characters
-        // located either vertically or horizontally
-        // in the grid.
+    /*
+     * Traverse the board to find same characters
+     * located either vertically or horizontally
+     * in the grid.
+     */
+
+
+    for (int row = 0; row < KGAME_SIDES - 1; ++row) {  //vertically
         for (int col = 0; col < KGAME_SIDES; ++col) {
-            if (game->board[row][col == 'K']) {
-                return true;
+            if (game->board[row][col] == game->board[row + 1][col]) {
+                return false;
+            }
+        }
+    }
+    for (int row = 0; row < KGAME_SIDES; ++row) {  //horizontally
+        for (int col = 0; col < KGAME_SIDES - 1; ++col) {
+            if (game->board[row][col] == game->board[row][col + 1]) {
+                return false;
             }
         }
     }
@@ -117,8 +129,120 @@ bool kgame_is_move_possible(const kgame_t *game) {
 }
 
 
+void move_down(kgame_t *game) {
+    for (int count = 0; count <= KGAME_SIDES; count++) {
+        if (count == 1) {//move tile first then add'em up
+            for (int row = KGAME_SIDES - 1; row > 0; row--) {//add things up
+                for (int col = KGAME_SIDES - 1; col >= 0; col--) {
+                    if (game->board[row][col] != 0 && game->board[row][col] == game->board[row - 1][col]) {
+                        game->board[row][col]     = game->board[row][col] + game->board[row - 1][col];
+                        game->board[row - 1][col] = 0;
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < 5; i++) {
+                for (int row = KGAME_SIDES - 1; row > 0; row--) {
+                    for (int col = KGAME_SIDES - 1; col >= 0; col--) {
+                        if (game->board[row][col] == 0) {
+                            game->board[row][col] = game->board[row - 1][col];
+                            game->board[row - 1][col] = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void move_up(kgame_t *game) {
+    for (int count = 0; count <= KGAME_SIDES; count++) {
+        if (count == 1) {//move tile first then add'em up
+            for (int row = 0; row < KGAME_SIDES - 1; row++) {//add things up
+                for (int col = 0; col <= KGAME_SIDES - 1; col++) {
+                    if (game->board[row][col] != 0 && game->board[row][col] == game->board[row + 1][col]) {
+                        game->board[row][col] = game->board[row][col] + game->board[row + 1][col];
+                        game->board[row + 1][col] = 0;
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < 5; i++) {
+                for (int row = 0; row < KGAME_SIDES - 1; row++) {
+                    for (int col = 0; col <= KGAME_SIDES - 1; col++) {
+                        if (game->board[row][col] == 0) {
+                            game->board[row][col] = game->board[row + 1][col];
+                            game->board[row + 1][col] = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+void move_left(kgame_t *game) {
+    for (int count = 0; count <= KGAME_SIDES; count++) {
+        if (count == 1) {
+            for (int row = 0; row < KGAME_SIDES; row++) {
+                for (int col = 0; col < KGAME_SIDES - 1; col++) {
+                    if (game->board[row][col] != 0 && game->board[row][col] == game->board[row][col + 1]) {
+                        game->board[row][col] += game->board[row][col + 1];
+                        game->board[row][col + 1] = 0;
+                    }
+                }
+            }
+        } else {
+            for (int row = 0; row < KGAME_SIDES; row++) {//move tiles
+                for (int col = 0; col < (KGAME_SIDES - 1); col++) {
+                    if (game->board[row][col] == 0) {
+                        game->board[row][col]     = game->board[row][col + 1];
+                        game->board[row][col + 1] = 0;
+                    }
+                }
+            }
+        }
+    }
+
+
+}
+
+void move_right(kgame_t *game) {
+    for (int count = 0; count <= KGAME_SIDES; count++) {
+        if (count == 1) {
+            for (int row = KGAME_SIDES - 1; row >= 0; row--) {
+                for (int col = KGAME_SIDES - 1; col > 0; col--) {
+                    if (game->board[row][col] != 0 && game->board[row][col] == game->board[row][col - 1]) {
+                        game->board[row][col] += game->board[row][col - 1];
+                        game->board[row][col - 1] = 0;
+                    }
+                }
+            }
+        } else {
+            for (int row = KGAME_SIDES - 1; row >= 0; row--) {//move tiles
+                for (int col = KGAME_SIDES - 1; col > 0; col--) {
+                    if (game->board[row][col] == 0) {
+                        game->board[row][col]     = game->board[row][col - 1];
+                        game->board[row][col - 1] = 0;
+                    }
+                }
+            }
+        }
+    }
+
+}
+
 bool kgame_update(kgame_t *game, dir_t direction) {
     // FIXME: Implement correctly (task 4)
+
+
+
+
+
+
+
+
     return true;
 }
 
