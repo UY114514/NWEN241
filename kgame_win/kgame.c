@@ -22,6 +22,32 @@ char *clear = "clear";
 #endif
 
 
+int tile_to_score(char C) {
+    switch (C) {
+        case 'A':
+            return 2;
+        case 'B':
+            return 4;
+        case 'C':
+            return 8;
+        case 'D':
+            return 16;
+        case 'E':
+            return 32;
+        case 'F':
+            return 64;
+        case 'G':
+            return 128;
+        case 'H':
+            return 256;
+        case 'I':
+            return 512;
+        case 'J':
+            return 1024;
+        case 'K':
+            return 2048;
+    }
+}
 
 
 void kgame_init(kgame_t *game) {
@@ -40,6 +66,9 @@ void kgame_add_random_tile(kgame_t *game) {
 
     // find random, but empty tile
     // FIXME: will go to infinite loop if no empty tile
+    if (!kgame_is_move_possible(game)) {
+        return;
+    }
     do {
         row = rand() % 4;
         col = rand() % 4;
@@ -55,10 +84,11 @@ void kgame_render(char *output_buffer, const kgame_t *game) //render a 4*4 grid
 {
     system(clear);
     memset(output_buffer, 0, sizeof(*output_buffer));//clear buffer
-
+    sprintf(output_buffer, "score:%i",game->score);
     static char LINE[] = "\n+---+---+---+---+\n";
     static char WARP[] = "|";
     char        str1[] = "|   ";
+    // show score
 
     for (int row = 0; row < KGAME_SIDES; ++row) {
         strcat(output_buffer, LINE);
@@ -76,7 +106,7 @@ bool kgame_is_won(const kgame_t *game) {
     // FIXME: Implement correctly (task 2)
     for (int row = 0; row < KGAME_SIDES; ++row) { //traverse the board to find K
         for (int col = 0; col < KGAME_SIDES; ++col) {
-            if (game->board[row][col == 'K']) {
+            if (game->board[row][col] == 'K') {
                 return true;
             }
         }
@@ -103,7 +133,7 @@ bool kgame_is_move_possible(const kgame_t *game) {
     for (int row = 0; row < KGAME_SIDES; ++row) { //traverse the board to find empty spaces
         for (int col = 0; col < KGAME_SIDES; ++col) {
             if (game->board[row][col] == ' ') {
-                return false;                     // at least one empty field
+                return true;                     // at least one empty field
             }
         }
     }
@@ -141,7 +171,8 @@ void move_down(kgame_t *game) {
             for (int row = KGAME_SIDES - 1; row > 0; row--) {//add tiles
                 for (int col = KGAME_SIDES - 1; col >= 0; col--) {
                     if (game->board[row][col] != ' ' && game->board[row][col] == game->board[row - 1][col]) {
-                        game->board[row][col]     = ++game->board[row][col];
+                        game->board[row][col] = ++game->board[row][col];//MERGE TILES
+                        game->score += tile_to_score(game->board[row][col]);//ADD SCORE
                         game->board[row - 1][col] = ' ';
                     }
                 }
@@ -167,7 +198,8 @@ void move_up(kgame_t *game) {
             for (int row = 0; row < KGAME_SIDES - 1; row++) {//add things up
                 for (int col = 0; col <= KGAME_SIDES - 1; col++) {
                     if (game->board[row][col] != ' ' && game->board[row][col] == game->board[row + 1][col]) {
-                        game->board[row][col]     = ++game->board[row][col];
+                        game->board[row][col] = ++game->board[row][col];//MERGE TILES
+                        game->score += tile_to_score(game->board[row][col]);//ADD SCORE
                         game->board[row + 1][col] = ' ';
                     }
                 }
@@ -194,7 +226,8 @@ void move_left(kgame_t *game) {
             for (int row = 0; row < KGAME_SIDES; row++) {
                 for (int col = 0; col < KGAME_SIDES - 1; col++) {
                     if (game->board[row][col] != ' ' && game->board[row][col] == game->board[row][col + 1]) {
-                        game->board[row][col]     = ++game->board[row][col];
+                        game->board[row][col] = ++game->board[row][col];//MERGE TILES
+                        game->score += tile_to_score(game->board[row][col]);//ADD SCORE
                         game->board[row][col + 1] = ' ';
                     }
                 }
@@ -220,7 +253,8 @@ void move_right(kgame_t *game) {
             for (int row = KGAME_SIDES - 1; row >= 0; row--) {
                 for (int col = KGAME_SIDES - 1; col > 0; col--) {
                     if (game->board[row][col] != ' ' && game->board[row][col] == game->board[row][col - 1]) {
-                        game->board[row][col]     = ++game->board[row][col - 1];
+                        game->board[row][col] = ++game->board[row][col - 1];//MERGE TILES
+                        game->score += tile_to_score(game->board[row][col]);//ADD SCORE
                         game->board[row][col - 1] = ' ';
                     }
                 }
@@ -240,8 +274,10 @@ void move_right(kgame_t *game) {
 }
 
 bool kgame_update(kgame_t *game,
-                  dir_t direction) {//direction = 1,2,3,4 : typedef enum direction { UP = 1, DOWN, LEFT, RIGHT } dir_t;
+                  dir_t direction) {
+    //direction = 1,2,3,4 : typedef enum direction { UP = 1, DOWN, LEFT, RIGHT } dir_t;
     // FIXME: Implement correctly (task 4)
+
     if (board_can_move(game, direction)) {
         switch (direction) {
             case UP:
