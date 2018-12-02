@@ -21,6 +21,15 @@ char *clear = "cls";
 char *clear = "clear";
 #endif
 
+/*
+ * This part of code makes program can
+ * auto clear the screen every turn
+ * but will make the message
+ * "Tried to save game." flashed away
+ * and is in the main.c so I can not
+ * fix this problem.
+ *
+ * */
 
 int tile_to_score(char C) {
     switch (C) {
@@ -84,7 +93,7 @@ void kgame_render(char *output_buffer, const kgame_t *game) //render a 4*4 grid
 {
     system(clear);
     memset(output_buffer, 0, sizeof(*output_buffer));//clear buffer
-    sprintf(output_buffer, "score:%i",game->score);
+    sprintf(output_buffer, "score:%i", game->score);
     static char LINE[] = "\n+---+---+---+---+\n";
     static char WARP[] = "|";
     char        str1[] = "|   ";
@@ -304,12 +313,56 @@ bool kgame_update(kgame_t *game,
 
 void kgame_save(const kgame_t *game) {
     // FIXME: Implement correctly (task 5)
+    FILE *fp;
+    fp = fopen(KGAME_SAVE_FILE, "w");
+    if (fp == NULL) {
+        printf("\n**FILE OPEN FAILED**\n");
+        return;
+    }
+
+    for (int row = 0; row < KGAME_SIDES; ++row) {//scan the board
+        for (int col = 0; col < KGAME_SIDES; ++col) {
+            char c = game->board[row][col];
+            if (c == ' ') { c = '-'; }//change SPACE( ) to short DASH(-)
+            fputc(c, fp);
+        }
+    }
+    fprintf(fp, " %i", game->score);//a SPACE between score and board
+    fclose(fp);//close the file
+
 }
 
 
 bool kgame_load(kgame_t *game) {
     // FIXME: Implement correctly (task 6)
-    return false;
+
+
+
+    FILE *fp;
+    fp = fopen(KGAME_SAVE_FILE, "r");
+    if (fp == NULL) {
+        printf("\n**FILE OPEN FAILED**\n");
+        return false;
+    }
+
+    char board[17];
+    int  score;
+    fscanf(fp, "%s %i", board, &score);
+    game->score = score;
+    int count = 0;
+    for (int row = 0; row < KGAME_SIDES; ++row) {//scan the board
+        for (int col = 0; col < KGAME_SIDES; ++col) {
+            char c = board[count++];
+            if (c == '-') { c = ' '; }//change SPACE( ) to short DASH(-)
+            game->board[row][col] = c;
+        }
+    }
+
+
+
+
+
+    return true;
 }
 
 
