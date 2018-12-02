@@ -352,8 +352,8 @@ bool kgame_load(kgame_t *game) {
     int count = 0;
     for (int row = 0; row < KGAME_SIDES; ++row) {//scan the board
         for (int col = 0; col < KGAME_SIDES; ++col) {
-            char c = board[count++];
-            if (c == '-') { c = ' '; }//change SPACE( ) to short DASH(-)
+            char c = board[count++];//read each char and put into
+            if (c == '-') { c = ' '; }//change short DASH(-) to SPACE( )
             game->board[row][col] = c;
         }
     }
