@@ -5,13 +5,13 @@
 
 #include "kgame.h"
 
-#define VALID_INPUTS_STRING   "Valid Inputs: [UP/DN/LT/RT] [S/s:Save] [L/l:Load] [X/x:Exit]\n"
+#define VALID_INPUTS_STRING   "Valid Inputs: [UP(r)/DN(f)/LT(d)/RT(g)] [S/s:Save] [L/l:Load] [X/x:Exit]\n"
 #define DEFAULT_OUTPUT_STRING "You have not implemented kgame_render() yet.\n"
 
-#define KEY_UP 56
-#define KEY_DOWN 53
-#define KEY_LEFT 52
-#define KEY_RIGHT 54
+#define KEY_UP 'r'
+#define KEY_DOWN 'f'
+#define KEY_LEFT 'd'
+#define KEY_RIGHT 'g'
 
 int get_user_input(void)
 {

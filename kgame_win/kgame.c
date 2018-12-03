@@ -2,8 +2,8 @@
  * NWEN 241 Programming Assignment 3
  * kgame.c C Source File
  *
- * Name:
- * Student ID:
+ * Name:Fangyi Yan
+ * Student ID:1624092237
  * 
  * IMPORTANT: Implement the functions specified in kgame.h here. 
  * You are free to implement additional functions that are not specified in kgame.h here.
@@ -14,12 +14,12 @@
 #include <stdlib.h>
 #include "kgame.h"
 #include <string.h>
-
-#if defined _MSC_VER
-char *clear = "cls";
-#elif defined __GNUC__
-char *clear = "clear";
-#endif
+//
+//#if defined _MSC_VER
+//char *clear = "cls";
+//#elif defined __GNUC__
+//char *clear = "clear";
+//#endif
 
 /*
  * This part of code makes program can
@@ -66,6 +66,9 @@ void kgame_init(kgame_t *game) {
         for (int j = 0; j < KGAME_SIDES; j++)
             game->board[i][j] = ' ';
     game->score = 0;
+    for (int z = 0; z < 2; ++z) {
+        kgame_add_random_tile(game);//insert two tile when the game start
+    }
 }
 
 void kgame_add_random_tile(kgame_t *game) {
@@ -75,7 +78,7 @@ void kgame_add_random_tile(kgame_t *game) {
 
     // find random, but empty tile
     // FIXME: will go to infinite loop if no empty tile
-    if (!kgame_is_move_possible(game)) {
+    if (!kgame_is_move_possible(game)) {//exit if no empty tile
         return;
     }
     do {
@@ -91,7 +94,7 @@ void kgame_add_random_tile(kgame_t *game) {
 
 void kgame_render(char *output_buffer, const kgame_t *game) //render a 4*4 grid
 {
-    system(clear);
+//    system(clear);//Can clear the screen every turn
     memset(output_buffer, 0, sizeof(*output_buffer));//clear buffer
     sprintf(output_buffer, "score:%i", game->score);
     static char LINE[] = "\n+---+---+---+---+\n";
@@ -314,7 +317,7 @@ bool kgame_update(kgame_t *game,
 void kgame_save(const kgame_t *game) {
     // FIXME: Implement correctly (task 5)
     FILE *fp;
-    fp = fopen(KGAME_SAVE_FILE, "w");
+    fp = fopen(KGAME_SAVE_FILE, "w+");
     if (fp == NULL) {
         printf("\n**FILE OPEN FAILED**\n");
         return;
