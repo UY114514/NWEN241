@@ -289,6 +289,7 @@ bool kgame_update(kgame_t *game,
                   dir_t direction) {
     //direction = 1,2,3,4 : typedef enum direction { UP = 1, DOWN, LEFT, RIGHT } dir_t;
     // FIXME: Implement correctly (task 4)
+    //The tile moving part code are modify from my COMP103's 2048 assignment
 
     if (board_can_move(game, direction)) {
         switch (direction) {
