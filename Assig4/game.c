@@ -21,14 +21,11 @@
 
 int main(void) {
     // FIXME: Implement Task 3 here
-    setbuf(stdout, 0);
+//    setbuf(stdout, 0);
     while (1) {
-
         int pid = 1;
         int input = 0;
-
-
-        printf("PID=%i\n", getpid());
+//        printf("PID=%i\n", getpid());
         printf("(1) Guessing Game\n(2) Tic-Tac-Toe \n(3) Exit\n");
         printf("-> ENTER YOUR CHOICE:");
         scanf("%i", &input);
@@ -39,11 +36,11 @@ int main(void) {
             case 2:
                 pid = fork();
                 break;
-            case 3:
-                printf("Exiting...");
+            default:
+                printf("Exiting...\n");
                 return 0;
         }
-        if (pid < 0) { //fork failed
+        if (pid < 0) { //if fork failed
             fprintf(stderr, "%s\n", "Fork failed");
             return -1;
         }
@@ -59,7 +56,6 @@ int main(void) {
             }
         } else {
             wait();
-//            printf("\np exit here\n");
         }
     }
 
@@ -78,27 +74,51 @@ int main(void) {
 
 int main(void) {
     // FIXME: Implement Task 4 here
-    printf("FORK_EXEC_IMPL\n");
-    int pid = 1;
-    int input = 0;
+//    printf("FORK_EXEC_IMPL\n");
+
+    while (1) {
+        int pid = 1;
+        int input = 0;
+        printf("(1) Guessing Game\n(2) Tic-Tac-Toe \n(3) Exit\n");
+        printf("-> ENTER YOUR CHOICE:");
+        scanf("%i", &input);
+        switch (input) {
+            case 1:
+                pid = fork();
+                break;
+            case 2:
+                pid = fork();
+                break;
+            default:
+                printf("Exiting...\n");
+                return 0;
+        }
 
 
-    printf("PID=%i\n", getpid());
-    printf("(1) Guessing Game\n(2) Tic-Tac-Toe \n(3) Exit\n");
-    printf("-> ENTER YOUR CHOICE:");
-    scanf("%i", &input);
-    switch (input) {
-        case 1:
-            pid = fork();
-            break;
-        case 2:
-            pid = fork();
-            break;
-        case 3:
-            printf("Exiting...");
-            return 0;
+        if (pid < 0) { //fork failed
+            fprintf(stderr, "%s\n", "Fork failed");
+            return -1;
+        }
+
+        if (pid == 0) {//for CHILD process
+            int exec_return;
+            switch (input) {
+                case 1:
+                    exec_return = execlp("./guess", "./guess", NULL);
+                    break;
+                case 2:
+                    exec_return = execlp("./ttt", "./ttt", NULL);
+                    break;
+            }
+        } else {//for PARENT process
+            wait();
+        }
+
+
+
     }
     return 0;
+
 }
 
 /*====== Fork + Exec Implementation End ======*/
@@ -109,7 +129,7 @@ int main(void) {
  * No Implementation Block
  * Do not write anything in this block
  */
-//#error "Did not specify implementation to compile."
+#error "Did not specify implementation to compile."
 
 /*====== No Implementation End ======*/
 #endif
