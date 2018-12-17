@@ -110,6 +110,11 @@ int main(void) {
                     exec_return = execlp("./ttt", "./ttt", NULL);
                     break;
             }
+            if(exec_return==-1){
+                printf("\nEXEC FAIL");
+                break;
+            }
+
         } else {//for PARENT process
             wait();
         }
